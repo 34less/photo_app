@@ -1,5 +1,3 @@
-<?php include_once("init.php"); ?>
-
 <?php if (User::isLogged()) {header("Location: index.php");} 
 
 $the_message="Username e password errati";

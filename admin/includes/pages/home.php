@@ -1,3 +1,7 @@
+        <!-- Navigation -->
+        <?php include("navigation.php"); ?>
+
+        <div id="page-wrapper">
            <div class="container-fluid">
 
                 <!-- Page Heading -->
@@ -21,3 +25,4 @@
 
             </div>
             <!-- /.container-fluid -->
+        </div>

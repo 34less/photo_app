@@ -1,16 +1,6 @@
-<?php include("includes/header.php"); ?>
 
         <!-- Navigation -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-
-        <!-- Below is included the top bar -->
-        <?php include("includes/top_bar.php"); ?>
-
-        <!-- Below is included the collapsed one -->
-        <?php include("includes/collapsed_bar.php"); ?>
-        </nav>
-
-
+        <?php include("navigation.php"); ?>
 
         <div id="page-wrapper">
 
@@ -20,7 +10,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Upload
+                            Users
                             <small>Subheading</small>
                         </h1>
                         <ol class="breadcrumb">
@@ -40,4 +30,3 @@
         </div>
         <!-- /#page-wrapper -->
 
-  <?php include("includes/footer.php"); ?>

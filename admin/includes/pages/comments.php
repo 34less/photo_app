@@ -1,16 +1,5 @@
-<?php include("includes/header.php"); ?>
-
         <!-- Navigation -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-
-        <!-- Below is included the top bar -->
-        <?php include("includes/top_bar.php"); ?>
-
-        <!-- Below is included the collapsed one -->
-        <?php include("includes/collapsed_bar.php"); ?>
-        </nav>
-
-
+        <?php include("navigation.php"); ?>
 
         <div id="page-wrapper">
 
@@ -40,4 +29,3 @@
         </div>
         <!-- /#page-wrapper -->
 
-  <?php include("includes/footer.php"); ?>

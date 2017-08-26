@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin - Bootstrap Admin Template</title>
+    <title>Photo App</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -31,23 +31,5 @@
 
 <body>
 
-        <!-- Navigation -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div id="wrapper">
 
-        <!-- Below is included the top bar -->
-        <?php include("includes/top_bar.php"); ?>
-
-        <!-- Below is included the collapsed one -->
-        <?php include("includes/collapsed_bar.php"); ?>
-        </nav>
-
-        <?php include('pages/'.$page.'.php'); ?>
-
-        <div id="page-wrapper">
-           <?php include("includes/admin_content.php"); ?>
-        </div>
-        <!-- /#page-wrapper -->
-
-        <?php include("includes/footer.php"); ?>
-
-</body>
