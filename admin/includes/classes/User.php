@@ -9,6 +9,8 @@ class User {
 	public $first_name;
 	public $last_name;
 
+	protected static $db_table = "users";
+
 	//*********************************************//
 	//costruttore, permette di caricare i dati dal database
 	public function __construct($id = NULL)
@@ -18,11 +20,12 @@ class User {
 
 	//***************************************************//
 	//funzione pubblica, usata di default dal costruttore per caricare i dati, viene passato l'id come mezzo di ricerca
+	//Read
 	public function load($id)
 	{
 
 		$sql = Database::getConnection()
-			->prepare('select * from users where id = ?');
+			->prepare('select * from '.self::$db_table.' where id = ?');
 		$sql->execute(array($id));
 		if ($sql->rowCount() == 1)
 		{
@@ -40,7 +43,7 @@ class User {
 	public static function load_all()
 	{
 		$sql = Database::getConnection()
-			->prepare('SELECT username, first_name, last_name FROM users'); //la password non viene scaricata
+			->prepare('SELECT username, first_name, last_name FROM '.self::$db_table); //la password non viene scaricata
 		$sql->execute();
 
 		$rows = $sql->fetchAll(); 
@@ -49,6 +52,7 @@ class User {
 
 	//************************************************//
 	//permette di salvare un utente nel database o aggiornarne i dati se già presenti (Se esiste già un ID)
+	// Create e Update
 	public function save()
 	{
 		if ($this->id > 0)
@@ -56,7 +60,7 @@ class User {
 			if (strlen($this->password) > 0)
 			{
 				$sql = Database::getConnection()->prepare('
-					update users set 
+					update '.self::$db_table.'	set 
 						`password` = aes_encrypt(:password, :crypt_key) 
 					where id = :id
 				');
@@ -69,7 +73,7 @@ class User {
 			
 
 			$sql = Database::getConnection()->prepare('
-				update users set 
+				update '.self::$db_table.'	 set 
 					`username` = :username, 
 					`first_name` = :first_name,
 					`last` = :first_name 
@@ -84,7 +88,7 @@ class User {
 		}
 		else
 		{
-			$sql = Database::getConnection()->prepare('insert into users (`username`, `password`, `first_name`, `last_name`)values(:username, aes_encrypt(:password, :crypt_key), :first_name, :last_name)');
+			$sql = Database::getConnection()->prepare('insert into '.self::$db_table.' (`username`, `password`, `first_name`, `last_name`)values(:username, aes_encrypt(:password, :crypt_key), :first_name, :last_name)');
 			$sql->execute(array(
 					':username' => $this->username, 
 					':password' => $this->password, 
@@ -99,10 +103,11 @@ class User {
 
 	// *****************************************//
 	// cancella un record dal database a partire dal sui id
+	// Delete
 	public static function delete($id)
 	{
 		$sql = Database::getConnection()
-			->prepare('delete from users where id = ?');
+			->prepare('delete from '.self::$db_table.'	where id = ?');
 		$sql->execute(array($id));
 	}
 
@@ -112,7 +117,7 @@ class User {
 	public static function login($username, $password)
 	{
 		$sql = Database::getConnection()
-			->prepare('select * from users where username like ? and aes_decrypt(password, ?) = ?');
+			->prepare('select * from '.self::$db_table.'	where username like ? and aes_decrypt(password, ?) = ?');
 		$sql->execute(array($username, CRYPT_KEY, $password));
 		if ($sql->rowCount() == 1)
 		{

@@ -14,8 +14,10 @@ if (!User::isLogged())
 }
 
 /* CONTROLLA SE ESISTE UNA PAGINA INIT E LA CARICA */
-if (file_exists('init_pages/init_'.$page.'.php'))
-include('init_pages/init_'.$page.'.php');
+if (file_exists('includes/init_pages/'.$page.'.php')){
+    include('includes/init_pages/'.$page.'.php');
+}
+
 
 /* CONTROLLA SE ESISTE LA PAGINA CHE VOGLIAMO CARICARE */
 if (file_exists('includes/pages/'.$page.'.php'))

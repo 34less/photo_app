@@ -23,7 +23,7 @@
 
 				}
 				catch(PDOException $e){
-					echo "OPS something went wrong: <br>" . $e->getMessage();
+					echo "OPS something went wrong with database connection, please try again later: <br>" . $e->getMessage();
 				}
 
 			}
