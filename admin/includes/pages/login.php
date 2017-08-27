@@ -12,7 +12,6 @@ if(isset($_POST['submit'])){
 	if (User::isLogged()) {header("Location: index.php");}
 	else echo "ERRORE";
 
-	echo print_r($_SESSION['login']);
 }
 
 ?>

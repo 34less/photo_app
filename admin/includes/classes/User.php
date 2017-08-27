@@ -23,7 +23,6 @@ class User {
 	//Read
 	public function load($id)
 	{
-
 		$sql = Database::getConnection()
 			->prepare('select * from '.self::$db_table.' where id = ?');
 		$sql->execute(array($id));

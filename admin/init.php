@@ -33,6 +33,6 @@ define('CRYPT_KEY', 'uuuudhhhdajkhdkad');
 //include classes used
 include("includes/Classes/Database.php");
 include("includes/Classes/User.php");
-
+include("includes/Classes/Photo.php");
 
 ?>

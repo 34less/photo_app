@@ -2,9 +2,36 @@
         <!-- Navigation -->
         <?php include("navigation.php"); ?>
 
+        <?php
+
+            // ONLY FOR DEBUG
+            if(isset($_POST['submit'])){
+                echo "<h1>HELLO</h1>";
+            }
+
+            /* ************* */
+            $photo = new Photo();
+            $photo->title = $_POST['title'];
+            $photo->set_file($_FILES['file_upload']);    
+           
+
+            if ($photo->save()){
+                $message = "photo uploaded Succefully";
+            }
+            else {
+                $message = "<br>" . $photo->errors;
+            }
+            echo $message;
+
+
+        ?>
+
 
 
         <div id="page-wrapper">
+
+
+
 
            <div class="container-fluid">
 
@@ -13,16 +40,22 @@
                     <div class="col-lg-12">
                         <h1 class="page-header">
                             Upload
-                            <small>Subheading</small>
+                            <small>Upload your picture here!</small>
                         </h1>
-                        <ol class="breadcrumb">
-                            <li>
-                                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
-                            </li>
-                            <li class="active">
-                                <i class="fa fa-file"></i> Blank Page
-                            </li>
-                        </ol>
+
+                        <div class="col-md-6">
+                            <form action="" method="post" enctype="multipart/form-data">
+
+                                <div class="form-group">
+                                    <input type="text" name="title" class="form-control">
+                                    <input type="file" name="file_upload">
+
+                                </div>
+
+                                <input type="submit" name="submit">
+
+                            </form>
+                        </div>
                     </div>
                 </div>
                 <!-- /.row -->
