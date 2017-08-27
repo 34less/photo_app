@@ -1,7 +1,7 @@
 <?php if (User::isLogged()) {header("Location: index.php");} 
 
 $the_message="Username e password errati";
-echo print_r($_SESSION['login']);
+
 if(isset($_POST['submit'])){
 
 	$username = trim($_POST['username']);
