@@ -1,20 +1,29 @@
 <?php
 
+	/* Definire il SITE ROOT */
+	define('DS',DIRECTORY_SEPARATOR);
+	define('FOTO_ROOT',SITE_ROOT. DS.'fotos');
+
 // la classe photo rappresenta la classe per ogni foto caricata
 class Photo {
 
-	public $photo_id;
-	public $title;
-	public $description;
-	public $filename;
-	public $type;
-	public $size;
-	public $errors;
+	/* Variabili della classe photo condivise con database */
+	public $photo_id; 
+	public $title; 
+	public $description; 
+	public $filename; 
+	public $type; 
+	public $size; 
 
+	/* Variabile per la tabella del database*/
 	protected static $db_table = "photos";
 
+	/* Variabili necessarie a maneggiare il file */
 	public $tmp_path;
-	public $upload_directory = "images";
+	public $upload_directory = "fotos";
+
+	/* Variabile per gestire gli errori gli errori*/
+	public $errors;
 	public $custom_errors = array();
 	public $upload_errors = array (
 		UPLOAD_ERR_OK 		  =>"There is no error",
@@ -55,6 +64,17 @@ class Photo {
 		}
 	}
 
+
+	/* Scarica tutte le foto dal database */
+	public static function load_all(){
+		$sql = Database::getConnection()
+			->prepare('SELECT photo_id, title, filename, size FROM '.self::$db_table); //la password non viene scaricata
+		$sql->execute();
+
+		$rows = $sql->fetchAll(); 
+		return $rows;
+	}
+
 	/* SETTER - IL METODO PERMETTE DI SALVARE I FILE DA $_FILE AL NOSTRO OGGETTO - E' ANCHE PRESENTE UN CONTROLLO SULL'ESISTENZA O MENO DEL FILE DA CARICARE E SU EVENTUALI ERRORI DI CARICAMENTO*/
 	public function set_file($file){
 
@@ -76,30 +96,30 @@ class Photo {
 		}
 	}
 
-	/* FUNCTION PER SAVE - CREATE*/
+	/* FUNCTION PER SAVE - GESTORE*/
 	public function save(){
 
-		if ($this->photo_id){
+		if ($this->photo_id)
+		{
 			$this->update();
 		}
 		else{
 			if(!empty($this->errors))
-				{return false;}
+				{ return false;}
 			if(empty($this->filename) || empty($this->tmp_path))
 				{
-					$this->errors[] = "the file was not available"; 
+					$this->errors[] = "the file was not available, please check the file"; 
 					return false;
 				}
 
-			$target_path = SITE_ROOT . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . $this->upload_directory;
-
-			if(file_exist($target_path)){
+			if(file_exists(FOTO_ROOT.DS.$this->filename)){
 				$this->errors[] = "The file {$this->filename} already exist";
+
 				return false;
 			}
 
 
-			if(move_uploaded_file($this->tmp_path, $target_path)){
+			if(move_uploaded_file($this->tmp_path, FOTO_ROOT.DS.$this->filename)){
 				if ($this->create()){
 					unset ($this->tmp_path);
 					return true;
@@ -109,6 +129,66 @@ class Photo {
 				return false;
 			}
 		}
+
+	}
+
+	/* FUNCTION PER INSERIRE I FILE NEL DB - CREATE*/
+	public function create(){
+
+		$sql = Database::getConnection()->prepare('insert into '.self::$db_table.' (`title`, `description`, `filename`, `type`, `size`)values(:title, :description, :filename, :type, :size)');
+		$sql->execute(array(
+				':title' => $this->title, 
+				':description' => $this->description, 
+				':filename' => $this->filename,
+				':type' => $this->type, 
+				':size' => $this->size
+			));
+
+		$this->photo_id = Database::getConnection()->lastInsertId();
+	}
+
+
+	/* FUNCTION PER AGGIORNARE I FILE NEL DB - UPDATE*/
+	private function update(){
+
+		$sql = Database::getConnection()->prepare('
+			update '.self::$db_table.'	 set 
+				`title` = :title, 
+				`description` = :description,
+				`filename` = :filename,
+				`type` = :type, 
+				`size` = :size
+
+			where id = :id
+		');
+		$sql->execute(array(
+				':title' => $this->title, 
+				':description' => $this->description,
+				':filename' => $this->filename,
+				':type' => $this->type,
+				':size' => $this->size
+			));
+	}
+
+
+
+	// *****************************************//
+	// cancella un record dal database a partire dal sui id
+	// Delete
+	public static function delete($id)
+	{
+		$sql = Database::getConnection()
+			->prepare('select filename from '.self::$db_table.'	where photo_id = ?');
+		$sql->execute(array($id));
+		if ($sql->rowCount() == 1)
+		{
+			$row = $sql->fetch()['filename'];
+			if (!is_null(FOTO_ROOT.DS.$row)) unlink(FOTO_ROOT.DS.$row);
+		}
+
+		$sql = Database::getConnection()
+			->prepare('delete from '.self::$db_table.'	where photo_id = ?');
+		$sql->execute(array($id));
 
 	}
 

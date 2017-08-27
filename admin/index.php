@@ -1,5 +1,8 @@
 <?php 
 
+/* Definisce come costante il punto in cui è locato l'index.php*/
+define ('SITE_ROOT', realpath(dirname(__FILE__)));
+
 /* INCLUDIAMO IL FILE DI INIZIALIZZAZIONE */
 include_once("init.php");
 

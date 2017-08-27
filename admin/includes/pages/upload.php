@@ -4,34 +4,25 @@
 
         <?php
 
-            // ONLY FOR DEBUG
             if(isset($_POST['submit'])){
-                echo "<h1>HELLO</h1>";
-            }
 
-            /* ************* */
-            $photo = new Photo();
-            $photo->title = $_POST['title'];
-            $photo->set_file($_FILES['file_upload']);    
-           
+                /* ************* */
+                $photo = new Photo();
+                $photo->title = $_POST['title'];
+                $photo->set_file($_FILES['file_upload']);    
+               
 
-            if ($photo->save()){
-                $message = "photo uploaded Succefully";
-            }
-            else {
-                $message = "<br>" . $photo->errors;
-            }
-            echo $message;
-
-
+                if ($photo->save()){
+                    $message = "Photo uploaded Succefully";
+                }
+                else {
+                    $message = "<br>" . $photo->errors;
+                }
+                echo $message;
+            }   
         ?>
 
-
-
         <div id="page-wrapper">
-
-
-
 
            <div class="container-fluid">
 
@@ -64,4 +55,3 @@
             <!-- /.container-fluid -->
         </div>
         <!-- /#page-wrapper -->
-
