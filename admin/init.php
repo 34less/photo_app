@@ -6,6 +6,7 @@
 if(!isset($_SESSION)) 
 { 
     session_start(); 
+
 } 
 
 //output buffer initialization
@@ -34,5 +35,9 @@ define('CRYPT_KEY', 'uuuudhhhdajkhdkad');
 include("includes/Classes/Database.php");
 include("includes/Classes/User.php");
 include("includes/Classes/Photo.php");
+include("includes/Classes/Comment.php");
+
+ 	User::visitor_count();
+
 
 ?>

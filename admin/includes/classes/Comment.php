@@ -1,16 +1,44 @@
 <?php
 
 // la classe user rappresenta la classe per ogni profilo
-class User {
+class Comment {
 
 	public $id;
-	public $username;
-	public $password;
-	public $first_name;
-	public $last_name;
-	public $count;
+	public $photo_id;
+	public $author;
+	public $body;
 
-	protected static $db_table = "users";
+	protected static $db_table = "comments";
+
+
+	/* *** Self-istance create comment *** */
+	public static function create_comment($photo_id, $author="Joen Does", $body=""){
+
+		if (!empty($photo_id) && !empty($author) && !empty($body))
+		{
+			$comment = new Comment();
+			$comment->photo_id = $photo_id;
+			$comment->author   = $author;
+			$comment->body 	   = $body;
+
+			return $comment;
+		}
+		else{
+			return false;
+		}
+	}
+
+	/* *** Find the comment by the id *** */
+	public static function find_the_comments($photo_id=0){
+
+		$sql = Database::getConnection()
+			->prepare('select * from '.self::$db_table.' where photo_id = ?');
+		$sql->execute(array($photo_id));
+
+		$rows = $sql->fetchAll(); 
+		return $rows;
+	}
+
 
 	//*********************************************//
 	//costruttore, permette di caricare i dati dal database
@@ -43,7 +71,7 @@ class User {
 	public static function load_all()
 	{
 		$sql = Database::getConnection()
-			->prepare('SELECT ID, username, first_name, last_name FROM '.self::$db_table); //la password non viene scaricata
+			->prepare('SELECT ID, photo_id, author, body FROM '.self::$db_table); //la password non viene scaricata
 		$sql->execute();
 
 		$rows = $sql->fetchAll(); 
@@ -57,44 +85,28 @@ class User {
 	{
 		if ($this->id > 0)
 		{
-			if (strlen($this->password) > 0)
-			{
-				$sql = Database::getConnection()->prepare('
-					update '.self::$db_table.'	set 
-						`password` = aes_encrypt(:password, :crypt_key) 
-					where id = :id
-				');
-				$sql->execute(array(
-					':password' => $this->password, 
-					':crypt_key' => CRYPT_KEY,
-					':id' => $this->id
-				));
-			}
-			
 
 			$sql = Database::getConnection()->prepare('
 				update '.self::$db_table.'	 set 
-					`username` = :username, 
-					`first_name` = :first_name,
-					`last` = :first_name 
+					`photo_id` = :photo_id, 
+					`author` = :author,
+					`body` = :body 
 
 				where id = :id
 			');
 			$sql->execute(array(
-					':username' => $this->username, 
-					':first_name' => $this->first_name,
-					':last_name' => $this->last_name
+					':photo_id' => $this->photo_id, 
+					':author' => $this->author,
+					':body' => $this->body
 				));
 		}
 		else
 		{
-			$sql = Database::getConnection()->prepare('insert into '.self::$db_table.' (`username`, `password`, `first_name`, `last_name`)values(:username, aes_encrypt(:password, :crypt_key), :first_name, :last_name)');
+			$sql = Database::getConnection()->prepare('insert into '.self::$db_table.' (`photo_id`, `author`, `body`)values(:photo_id, :author, :body)');
 			$sql->execute(array(
-					':username' => $this->username, 
-					':password' => $this->password, 
-					':crypt_key' => CRYPT_KEY,
-					':first_name' => $this->first_name, 
-					':last_name' => $this->last_name
+					':photo_id' => $this->photo_id, 
+					':author' => $this->author, 
+					':body' => $this->body,
 				));
 
 			$this->id = Database::getConnection()->lastInsertId();
@@ -145,19 +157,6 @@ class User {
 			isset($_SESSION['login']) and 
 			isset($_SESSION['login']['ID']) and 
 			$_SESSION['login']['ID'] > 0;
-	}
-
-	/* Permette di vedere il conteggio dei visitatori */
-
-	public static function visitor_count(){
-
-		if(isset($_SESSION['count'])){
-
-			return $_SESSION['count']++;
-		}
-		else{
-			return $_SESSION['count']=1;
-		}
 	}
 }
 
